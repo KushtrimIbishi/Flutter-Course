@@ -21,23 +21,48 @@ class _MyAppState extends State<MyApp> {
   final _questions = const [
     {
       'questionText': 'What\'s your favorite color?',
-      'answers': ['Black', 'Red', 'Green', 'Blue'],
+      'answers': [
+        {'text': 'Black', 'score': 10},
+        {'text': 'Red', 'score': 5},
+        {'text': 'Green', 'score': 3},
+        {'text': 'White', 'score': 1},
+      ],
     },
     {
       'questionText': 'What\'s your favorite animal',
-      'answers': ['Cat', 'Dog', 'Elephant', 'Lion'],
+      'answers': [
+        {'text': 'Rabbit', 'score': 3},
+        {'text': 'Dog', 'score': 11},
+        {'text': 'Elephant', 'score': 5},
+        {'text': 'Lion', 'score': 9},
+      ],
     },
     {
       'questionText': 'Who\s your favorite instructor',
-      'answers': ['Kusha', 'Xhaxhi', 'Doni', 'Luta'],
+      'answers': [
+        {'text': 'Max', 'score': 1},
+        {'text': 'Kusha', 'score': 1},
+        {'text': 'Doni', 'score': 1},
+        {'text': 'Luta', 'score': 1},
+      ],
     },
   ];
 
   var _questionIndex = 0;
+  var _totalScore = 0;
 
-  void _answerQuestion() {
+  void _resetQuiz() {
+    setState(() {
+      _questionIndex = 0;
+      _totalScore = 0;
+    });
+  }
+
+  void _answerQuestion(int score) {
     // var aBool = true;
     // aBool = false;
+
+    _totalScore += score;
     setState(() {
       _questionIndex = _questionIndex + 1;
     });
@@ -51,22 +76,20 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // var dummy = ['Hello'];
-    // dummy.add('Kusha');
-    // print(dummy);
-
     return MaterialApp(
       home: Scaffold(
-          appBar: AppBar(
-            title: Text('My First App'),
-          ),
-          body: _questionIndex < _questions.length
-              ? Quiz(
-                  answerQuestion: _answerQuestion,
-                  questionIndex: _questionIndex,
-                  questions: _questions,
-                )
-              : Result()),
+        appBar: AppBar(
+          title: Text("Quiz App"),
+          centerTitle: true,
+        ),
+        body: _questionIndex < _questions.length
+            ? Quiz(
+                questions: _questions,
+                index: _questionIndex,
+                // turned _answerQuestion into anonymous function
+                answerQuestion: () => _answerQuestion)
+            : Result(_totalScore, _resetQuiz),
+      ),
     );
   }
 }
